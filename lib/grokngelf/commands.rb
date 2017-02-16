@@ -1,0 +1,5 @@
+require 'grokngelf/commands/main'
+require 'grokngelf/commands/abstract'
+require 'grokngelf/commands/yum'
+require 'grokngelf/commands/syslog'
+require 'grokngelf/commands/sosreport'

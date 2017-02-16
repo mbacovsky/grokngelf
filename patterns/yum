@@ -1,0 +1,12 @@
+YUMACTION (Installed|Updated|Erased)
+PACKAGENAME [+a-zA-Z0-9._-]+
+VERSIONNUM [a-zA-Z0-9_]+
+VERSIONEND [a-zA-Z0-9_.]+
+PACKAGEVERSION %{VERSIONNUM:version_major}(\.%{VERSIONNUM:version_minor})?(\.%{VERSIONNUM:version_z})?(\.%{VERSIONEND:version_end})?
+PACKAGERELEASEARCH (i386|i686|x86_64|noarch|i370|s390x|s390|ppc|ppc64|ia64|armv6l|armv7l)
+PACKAGERELEASE %{PACKAGENAME:release}\.%{PACKAGERELEASEARCH:architecture}
+PACKAGEEPOCH %{NONNEGINT:epoch}:
+PACKAGENEVRA %{PACKAGEEPOCH}?%{PACKAGENAME:package_name}-%{PACKAGEVERSION:package_version}-%{PACKAGERELEASE}
+YUMMESSAGE %{YUMACTION:action}: %{PACKAGENEVRA}
+
+YUMLOG %{SYSLOGTIMESTAMP:timestamp} %{YUMMESSAGE:message}
