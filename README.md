@@ -176,7 +176,7 @@ that I extended to create GELF TCP input and to open the port.
 Regardless of the type of installation you use make sure the GELF Input is Up and running.
 In Graylog UI select `System > Input`
 
-![GELF Input in Graylog](https://github.com/mbacovsky/tree/master/doc/img/gelf_input.png "GELF Input in Graylog")
+![GELF Input in Graylog](https://raw.githubusercontent.com/mbacovsky/grokngelf/master/doc/img/gelf_input.png "GELF Input in Graylog")
 
 Also open the port in the firewall if necessary with e.g.
 
@@ -186,6 +186,21 @@ Also open the port in the firewall if necessary with e.g.
 
 How do I search the logs in Graylog
 -----------------------------------
+Import some data to the Graylog e.g. with
+
+```
+  $ grokngelf yum -t graylog.example.com --host testhost.example.com --import-id 1 /tmp/sosreport-sample
+```
+
+In the Graylog UI go to `Search` and select `Search in all messages` at the top in the time range selector.
+In the search box filter the data you've just imported with `facility:testhost.example.com AND import_id:1`
+and click the search button. Note that the `host` (a.k.a facility in Graylog) and `import_id` fields are there just for
+filtering of the logs so you can use whatever data there that work for you e.g. bug number, hostname, customer name, etc.
+
+![Search in Graylog](https://raw.githubusercontent.com/mbacovsky/grokngelf/master/doc/img/graylog_search.png "Search in Graylog")
+
+More on filtering possibilities, query language, exports, statistics and analysis in Graylog check the [docs](http://docs.graylog.org/en/2.2/pages/queries.html).
+
 
 License
 -------
