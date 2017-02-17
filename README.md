@@ -79,7 +79,7 @@ For sosreport all applicable importers are called for the relevant logs from col
 Importer reads the log line by line and tries to match the line
 to [GROK patterns](https://github.com/jordansissel/ruby-grok)
 from its library. From the matched line structured event is created and send in
-[GELF](http://docs.graylog.org/en/2.2/pages/gelf.html) format to the logging service.
+[GELF](http://docs.graylog.org/en/2.2/pages/gelf.html) format to the log manager.
 
 For more complex logs such as `syslog` we need to parse the content in multiple runs
 and every pass pick data just for specific pattern. Lines that were not matched are imported with `program: 'unmatched'` and can be filtered and revieved later.
@@ -102,6 +102,17 @@ Each event has mandatory attributes regardless of importer it originates from:
     'log_file' => '',                 # file that was parsed to produce this entry
   }
 ```
+
+
+How can I improve it
+--------------------
+Any contribution is highly appreciated. I welcome any kind of help
+
+- report [issues](https://github.com/mbacovsky/grokngelf/issues)
+- send [feature your requests and ideas](https://github.com/mbacovsky/grokngelf/issues)
+- improve documentation
+- send [PRs](https://github.com/mbacovsky/grokngelf/pulls) with fixes
+- develop new importers
 
 
 What logs are supported
@@ -137,16 +148,44 @@ What logs are supported
  - *Pulp messages*
  - *Generic syslog messages*
 
+How do I install Graylog
+-------------------------
+There is plenty of ways to [install Graylog](http://docs.graylog.org/en/2.1/pages/installation.html).
+Most easy is probably to use Graylog's VM appliances. I have good experience with their ansible playbook
+that I extended to create GELF TCP input and to open the port.
 
-How can I improve it
---------------------
-Any contribution is highly appreciated. I welcome any kind of help
+```yaml
+- name: Create graylog global GELF input for receiving logs
+  uri:
+    url: http://127.0.0.1:9000/api/system/inputs
+    method: POST
+    user: "admin"
+    password: "admin"
+    body: '{"title":"GELFTCPInput","type":"org.graylog2.inputs.gelf.udp.GELFTCPInput","configuration":{"bind_address":"0.0.0.0","port":12201,"recv_buffer_size":1048576,"override_source":null,"decompress_size_limit":8388608},"global":true}'
+    force_basic_auth: yes
+    status_code: 201
+    body_format: json
 
- - report [issues](https://github.com/mbacovsky/grokngelf/issues)
- - send [feature your requests and ideas](https://github.com/mbacovsky/grokngelf/issues)
- - improve documentation
- - send [PRs](https://github.com/mbacovsky/grokngelf/pulls) with fixes
- - develop new importers
+- name: Open port 12201 in firewall
+  firewalld:
+    port: 12201/tcp
+    permanent: true
+    state: enabled
+```
+
+Regardless of the type of installation you use make sure the GELF Input is Up and running.
+In Graylog UI select `System > Input`
+
+![GELF Input in Graylog](https://github.com/mbacovsky/tree/master/doc/img/gelf_input.png "GELF Input in Graylog")
+
+Also open the port in the firewall if necessary with e.g.
+
+```bash
+ $ firewall-cmd --add-port="12201/tcp"
+```
+
+How do I search the logs in Graylog
+-----------------------------------
 
 License
 -------
