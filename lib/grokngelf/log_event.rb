@@ -27,6 +27,18 @@ module GrokNGelf
         }.merge(data)
     end
 
+    def fetch(key, default=nil)
+      @event.fetch(key, default)
+    end
+
+    def include_data?(data)
+      @event.merge(data) == @event
+    end
+
+    def inspect
+      'Log: ' + @event.inspect
+    end
+
     def to_hash
       @event
     end
