@@ -13,6 +13,15 @@ module GrokNGelf
       def level(level)
         GrokNGelf::LogEvent::LEVEL[level.to_sym]
       end
+
+      def humanize_elapsed_time(secs)
+        [[60, :s], [60, :m], [24, :h], [1000, :d]].map{ |count, name|
+          if secs > 0
+            secs, n = secs.divmod(count)
+            "#{n.to_i} #{name}"
+          end
+        }.compact.reverse.join(' ')
+      end
     end
   end
 end
