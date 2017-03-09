@@ -24,7 +24,7 @@ describe GrokNGelf::Importers::Yum do
       "package_release"=>"60.el7",
       "package_architecture"=>"x86_64"
     }
-    notifier.expects(:notify).with { |log| event_match(expected_log, log) }
+    notifier.expects(:notify).with(log_event_matcher(expected_log))
 
     yum_importer.import(fixture_log('yum_standard.log'))
   end
