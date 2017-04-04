@@ -27,4 +27,5 @@ EOF
   s.add_dependency 'awesome_print'
   s.add_dependency 'gelf'
   s.add_dependency 'jls-grok'
+  s.add_dependency 'sqlite3'
 end

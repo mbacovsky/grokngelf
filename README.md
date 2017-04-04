@@ -52,6 +52,7 @@ For more help see:
       yum                           process yum log
       syslog                        process system log
       sosreport                     process sos report
+      dynflow-tasks                 process CSV export of dynflow tasks
 
   Options:
       -h, --help                    print help
@@ -143,10 +144,75 @@ What logs are supported
 ```
 
 ### `var/log/messages`
- - *Importer:* `Syslog`
+- *Importer:* `Syslog`
  - *Status*: *WIP*
- - *Pulp messages*
- - *Generic syslog messages*
+ - Pulp messages
+ - Generic syslog messages
+
+### `tmp/export`
+- *Importer:* `DynflowTasks`
+ - *Status*: *Complete*
+ - Execution plans (+ data from dynflow actions and foreman tasks)
+ - Execution steps
+ - Example of Execution plan:
+ ```ruby
+   {
+      "timestamp"=>1485035640,
+      "level"=>1,
+      "level_hr"=>"INFO",
+      "importer"=>"GrokNGelf::Importers::DynflowTasks",
+      'program' => 'dynflow',
+      'short_message' => "Execution plan 3926bad1-7b7d-4a49-9e86-e31e4f431483 started",
+      'dynflow_object' => 'execution_plan',
+      'dynflow_plan_id' => '3926bad1-7b7d-4a49-9e86-e31e4f431483',
+      'dynflow_class' => 'Actions::RemoteExecution::RunHostsJob',
+      'dynflow_input' => {"job_invocation"=>{"id"=>2, "name"=>"Commands", "description"=>"Run echo hello"}},
+      'dynflow_output' => {"total_count"=>1, "failed_count"=>0, "success_count"=>1, "pending_count"=>0},
+      'dynflow_event_type' => 'start',
+      'dynflow_state' => 'stopped',
+      'dynflow_result' => 'success',
+      'dynflow_started_at' => '2017-01-21 21:54:00',
+      'dynflow_ended_at' => '2017-01-21 21:54:03',
+      'dynflow_real_time' => 3.601317757,
+      'dynflow_real_time_hr' => '3 s',
+      'dynflow_execution_time' => 0.440313698,
+      'foreman_task_start_at' => '2017-01-21 21:54:00.053138',
+      'foreman_task_start_before' => '2017-01-21 21:54:00.053138',
+      'foreman_task_id' => 'd8a0ec75-b056-4102-be4d-f211dc8734be',
+      'foreman_task_type' => 'ForemanTasks::Task::DynflowTask',
+      'foreman_task_label' => 'Actions::RemoteExecution::RunHostsJob',
+      'log_file' => fixture_log('dynflow_tasks_success/dynflow_execution_plans.csv')
+    }
+ ```
+ - Example of Execution step:
+ ```ruby
+   {
+      'timestamp' => 1485035641,
+      'level' => 1,
+      'level_hr' => 'INFO',
+      'program' => 'dynflow',
+      'short_message' => "Execution step started",
+      'dynflow_object' => 'step',
+      'dynflow_plan_id' => '3926bad1-7b7d-4a49-9e86-e31e4f431483',
+      'dynflow_event_type' => 'start',
+      'dynflow_class' => 'Actions::RemoteExecution::RunHostsJob',
+      'dynflow_step_class' => 'Dynflow::ExecutionPlan::Steps::RunStep',
+      'dynflow_input' => {"job_invocation"=>{"id"=>2, "name"=>"Commands", "description"=>"Run echo hello"}},
+      'dynflow_output' => {"total_count"=>1, "failed_count"=>0, "success_count"=>1, "pending_count"=>0},
+      'dynflow_error' => nil,
+      'dynflow_step_id' => 2,
+      'dynflow_result' => 'success',
+      'dynflow_started_at' => '2017-01-21 21:54:01',
+      'dynflow_ended_at' => '2017-01-21 21:54:03',
+      'dynflow_real_time' => 2.376708706,
+      'dynflow_real_time_hr' => '2 s',
+      'dynflow_execution_time' => 0.394046164,
+      'dynflow_progress_done' => 1.0,
+      'dynflow_progress_weight' => 1.0,
+      'log_file' => fixture_log('dynflow_tasks_success/dynflow_steps.csv')
+    }
+
+ ```
 
 How do I install Graylog
 -------------------------
